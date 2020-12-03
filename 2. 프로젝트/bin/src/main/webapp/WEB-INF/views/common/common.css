@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+.btn{
+ 	border-radius:50px;
+}
+
+.btn_basic{
+	background-color:#3498db
+}
+.blue{
+	background-color:#00519e;
+	border-color: #00519e;
+}
+
+.orange{
+	background-color: #f39c12;
+	border-color: #f39c12;
+}
+
+.whiteFont{
+	color:white
+}

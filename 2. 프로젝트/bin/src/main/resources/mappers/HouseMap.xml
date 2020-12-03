@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ssafy.mapper.HouseMapDAO">
+ 
+ <!-- select -->
+ 
+ <select id="getSido" resultType="SidoGugunCode">
+ SELECT left(sido_code,2) as sidoCode, sido_name as sidoName
+ FROM sidocode
+ ORDER BY sido_code
+ </select>
+ 
+ <select id="getGugunInSido" parameterType="String" resultType="SidoGugunCode">
+ SELECT left(gugun_code,5) gugunCode, gugun_name as gugunName
+ FROM guguncode
+ where left(gugun_code,2) = #{value}
+ ORDER BY gugun_code
+ </select>
+ 
+ <select id="getDongCodeByName" parameterType="String" resultType="String">
+ SELECT dongcode as dongCode
+ FROM dongcode
+ where dong = #{value}
+ </select>
+ 
+  <select id="getDongNameByCode" parameterType="String" resultType="String">
+ SELECT dong as dongName
+ FROM dongcode
+ where dongcode = #{value}
+ </select>
+ 
+ <select id="getDongInGugun" parameterType="String" resultType="SidoGugunCode">
+ SELECT dong as dongName, dongcode as dongCode 
+ FROM dongcode
+ where left(dongcode,5) = #{value}
+ ORDER BY dong
+ 
+ </select>
+ 
+ 
+ <select id="getAptInDong" parameterType="String" resultType="houseInfo">
+  SELECT no,dong,AptName as aptName,code,jibun 
+  FROM houseinfo 
+  WHERE dong = #{value}
+  ORDER BY AptName
+ </select>
+ 
+ <select id="getAptByName" parameterType="String" resultType="houseInfo">
+ SELECT no,dong,AptName as aptName,code,jibun 
+ FROM houseinfo 
+ WHERE AptName like CONCAT('%',#{value},'%')
+ ORDER BY AptName
+ </select>
+ 
+ <select id="getAptDetail" parameterType="String" resultType="houseDeal">
+ SELECT no,dong,AptName as aptName,code,dealAmount 
+ FROM housedeal 
+ WHERE AptName= #{aptName} and dong=#{dong}
+ ORDER BY dealAmount
+ </select>
+ 
+ <select id="getGugunNameByCode" parameterType="String" resultType="String">
+ SELECT gugun_name
+ FROM guguncode
+ where left(gugun_code,5) =#{value}
+ </select>
+
+ </mapper>
+
+

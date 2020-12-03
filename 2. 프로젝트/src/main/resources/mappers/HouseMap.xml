@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ssafy.mapper.HouseMapDAO">
+ 
+ <!-- select -->
+ 
+ <select id="getSido" resultType="SidoGugunCode">
+ SELECT left(sido_code,2) as sidoCode, sido_name as sidoName
+ FROM sidocode
+ ORDER BY sido_code
+ </select>
+ 
+ <select id="getGugunInSido" parameterType="String" resultType="SidoGugunCode">
+ SELECT left(gugun_code,5) gugunCode, gugun_name as gugunName
+ FROM guguncode
+ where left(gugun_code,2) = #{value}
+ ORDER BY gugun_code
+ </select>
+ 
+ <select id="getDongCodeByName" parameterType="String" resultType="String">
+ SELECT dongcode as dongCode
+ FROM dongcode
+ where dong = #{value}
+ </select>
+ 
+  <select id="getDongNameByCode" parameterType="String" resultType="String">
+ SELECT dong as dongName
+ FROM dongcode
+ where dongcode = #{value}
+ </select>
+ 
+ <select id="getDongInGugun" parameterType="String" resultType="SidoGugunCode">
+ SELECT dong as dongName, dongcode as dongCode 
+ FROM dongcode
+ where left(dongcode,5) = #{value}
+ ORDER BY dong
+ 
+ </select>
+ 
+ <select id="getAptInDongCount" parameterType="String" resultType="int">
+  SELECT count(*)
+  FROM houseinfo 
+  WHERE dong = #{value}
+  ORDER BY AptName
+ </select>
+ 
+  <select id="getAptInDong" parameterType="String" resultType="houseInfo">
+  SELECT *
+  FROM houseinfo 
+  WHERE dong = #{value}
+  ORDER BY AptName
+ </select>
+ 
+ <select id="getAptInDongWithPaging"  resultType="houseInfo">
+ select *
+ from houseinfo
+ where dong in(
+		select dong
+		from houseinfo
+		where dong = #{dong} 
+	 ) 
+ limit #{cri.displayRow} OFFSET #{cri.offset}
+ </select>
+ 
+ <select id="getAptByNameCount" parameterType="String" resultType="int">
+ SELECT count(*)
+ FROM houseinfo 
+ WHERE AptName like CONCAT('%',#{value},'%')
+ ORDER BY AptName
+ </select>
+ 
+ <select id="getAptByName" parameterType="String" resultType="houseInfo">
+ SELECT *
+ FROM houseinfo 
+ WHERE AptName like CONCAT('%',#{value},'%')
+ ORDER BY AptName
+ </select>
+ 
+  <select id="getAptByNameWithPaging"  resultType="houseInfo">
+ select *
+ from houseinfo
+ where AptName in(
+		select AptName
+		from houseinfo
+		WHERE AptName like CONCAT('%',#{aptName},'%') 
+	 ) 
+ limit #{cri.displayRow} OFFSET #{cri.offset}
+ </select>
+ 
+ <select id="getAptDetail" parameterType="String" resultType="int">
+ SELECT count(*)
+ FROM housedeal 
+ WHERE AptName= #{aptName} and dong=#{dong}
+ ORDER BY dealAmount
+ </select>
+ 
+ 
+   <select id="getAptDetailWithPaging"  resultType="houseDeal">
+ select *
+ from housedeal
+ where AptName in(
+		select AptName
+		from housedeal
+		WHERE AptName like CONCAT('%',#{aptName},'%') and dong=#{dong}
+	 ) 
+ limit #{cri.displayRow} OFFSET #{cri.offset}
+ </select>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ <select id="getGugunNameByCode" parameterType="String" resultType="String">
+ SELECT gugun_name
+ FROM guguncode
+ where left(gugun_code,5) =#{value}
+ </select>
+
+
+ <select id="getAddress" parameterType="String" resultType="SidoGugunCode">
+	 SELECT dong as dongName, dongcode as dongCode, gugun as gugunName, city as sidoName 
+	 FROM dongcode
+	 where dongcode =#{value}
+	 ORDER BY dong;
+ </select>
+ </mapper>
+
+

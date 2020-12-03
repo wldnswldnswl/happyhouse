@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ssafy.mapper.UserDAO">
+ 
+ 	<!-- insert -->
+ 	
+ 	<!-- 회원 등록 -->
+ 	<insert id="insert" parameterType="User" >
+ 	insert into user (userid,username,userpwd,email,user_state)
+ 	values (#{id},#{name},#{pwd},#{email},0)
+ 	</insert>
+ 	
+ 	<!-- 관심 지역 등록 -->
+ 	<insert id ="insertInterest" parameterType="String">
+ 	insert into user_interest (id,dong_code,interst_state) values (#{id},#{dongCode},#{rep})
+ 	</insert>
+	<!-- select -->
+	
+	<!-- 아이디로 회원 정보 검색 -->
+	<select id="selectById" parameterType="String"  resultType="User">
+		select userid id, username name,userpwd pwd,email, user_state state,dong_code interest, interst_state
+		from user a
+		right join user_interest b
+		on a.userid = b.id
+		where a.userid=#{value}
+		order by interst_state != 1
+		limit 1
+	</select>
+	
+	<!-- 아이디로 회원 정보 검색: 지역 제외 -->
+	<select id ="selectByIdCoreInfo" parameterType = "String" resultType="User">
+		select userid id, username name,userpwd pwd,email
+		from user
+		where userid = #{value}
+		and user_state != -1
+	</select>
+	
+	<!-- 로그인 하기위해 아이디랑 비밀번호 일치여부 탐색 -->
+	<select id="selectUser" parameterType="map" resultType="String" >
+		select user_state
+		from user
+		where userid=#{id} and userpwd=#{pwd} 
+	</select>
+	
+	<!-- 모든 회원 정보 조회 -->
+	<!-- 
+	<select id="selectUsers" resultType="User" >
+		select userid id, username name,userpwd pwd,email, user_state state,dong_code interest
+		from user a
+		right join user_interest b
+		on a.userid = b.id 
+		where a.user_state !=-1 and b.interst_state=1
+		order by username
+	</select>
+	 -->
+	 
+	 <!-- 모든 회원 정보 조회 -->
+	 <select id="selectUsers" resultType="User" >
+		select userid id, username name,userpwd pwd,email
+		from user 
+		where user_state !=-1
+		order by username
+	</select>
+	
+	<!-- update -->
+	
+	<!-- 회원 정보 수정 -->
+	<update id="update" parameterType="User">
+	update user 
+	set userpwd=#{pwd},
+		username=#{name},
+		email=#{email}
+	where userid=#{id}
+	</update>
+	
+	<!-- 회원 정보 수정 -->
+	<update id="updateNotIncludingPwd" parameterType="User">
+	update user 
+	set username=#{name},
+		email=#{email}
+	where userid=#{id}
+	</update>
+	
+	<!-- 회원 삭제 -->
+	<update id="delete" parameterType="String">
+		update user 
+		set user_state="-1"
+		where userid=#{id}
+	</update>
+	
+	<!-- 이름으로 검색 -->	
+	 <select id="selectByName" parameterType="String"  resultType="User">
+	 	select userid id, username name,userpwd pwd,email
+		from user 
+		where user_state !=-1
+		and username like CONCAT('%',#{value},'%')
+		order by username
+ 	 </select>
+ 	 
+ 	 <!-- time_table 등록 -->
+ 	<insert id="insertTimetable" parameterType="String" >
+ 		insert into time_table (id) values (#{id});
+ 	</insert>
+	
+ </mapper>

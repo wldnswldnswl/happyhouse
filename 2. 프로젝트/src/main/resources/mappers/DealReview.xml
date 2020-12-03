@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.mapper.DealReviewDAO">
+
+	<!-- select -->
+	<select id="getDealReviews" resultType="DealReview" >
+		SELECT * FROM dealreview
+	</select>
+
+	<select id="getInterestDealReviews" resultType="DealReview" >
+		select *
+		from dealreview
+		where dong_code in (${dong_list});
+	</select>
+
+	<select id="selectDealReview" parameterType="String" resultType="DealReview">
+		select
+		* from dealreview where no=#{value}
+	</select>
+
+
+	<select id="getDealReviewsWithPaging"  resultType="DealReview">
+		select deal.*, concat(dong.gugun," " ,dong.dong) dong_name
+		from dealreview deal
+		join dongcode dong
+		on dong.dongcode = deal.dong_code
+		order by no desc
+		limit #{displayRow} OFFSET #{offset}
+	</select>
+
+	<select id="getInterestDealReviewsWithPaging" parameterType="Map" resultType="DealReview">
+		select deal.*, concat(dong.gugun," " ,dong.dong) dong_name
+		from dealreview deal
+		join dongcode dong
+		on dong.dongcode = deal.dong_code
+		where deal.dong_code in
+		<foreach item="item" index = "index" 
+					collection="dong_list"
+					open="(" separator="," close=")"
+					>#{item}</foreach>
+		order by no desc
+		limit #{page.displayRow} OFFSET #{page.offset}
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		<choose>
+			<when test="dong_list != null">
+				select count(*) 
+				from dealreview
+				where no>0
+					and dong_code in 
+					<foreach item="item" index = "index" 
+							collection="dong_list"
+							open="(" separator="," close=")"
+					>#{item}</foreach>
+			</when>
+			<otherwise>
+				select count(*) 
+				from dealreview
+				where no>0
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- insert -->
+	<insert id="setDealReview" parameterType="DealReview">
+		insert into
+		dealreview(writer,title,content,dong_code) values
+		(#{writer},#{title},#{content},#{dong_code})
+	</insert>
+
+	<update id="updateDealReview" parameterType="DealReview" >
+		
+		update dealreview set
+		title=#{title},content=#{content} where no=#{no}
+		
+	</update>
+	
+	
+	
+	<delete id="deleteDealReview" parameterType="String">
+		DELETE FROM dealreview WHERE (`no` = #{value})
+	</delete>
+	
+	
+
+</mapper>

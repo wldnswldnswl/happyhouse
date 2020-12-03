@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.mapper.SignalDAO">
+
+	<select id="getDealReviews" parameterType="String" resultType="DealReview" >
+		select deal.*, concat(dong.gugun," " ,dong.dong) dong_name
+from dealreview deal
+join dongcode dong
+on dong.dongcode = deal.dong_code
+where deal.dong_code in (
+			select dong_code
+			from user_interest
+			where id = #{id}
+		) and regtime > (
+			select checktime
+			from time_table
+			where id = #{id})
+	</select>
+	
+	<update id="update" parameterType="String">
+		update time_table 
+		set checktime = curtime()
+		where id = #{id}
+	</update>
+</mapper>

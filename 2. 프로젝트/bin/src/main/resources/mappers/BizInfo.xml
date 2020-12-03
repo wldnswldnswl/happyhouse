@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ssafy.mapper.BizInfoDAO">
+ 
+ <!-- select -->
+ <select id="getlarge" resultType="BizCategory">
+ SELECT left(large_code,1) largeCode, large_name as largeName 
+ FROM large_category 
+ ORDER BY large_code
+ </select>
+ 
+ <select id="getMidInLarge" parameterType="String" resultType="BizCategory">
+ SELECT left(mid_code,3) midCode, mid_name as midName 
+ FROM mid_category
+ where left(mid_code,1) =#{value}
+ ORDER BY mid_code 
+ </select>
+ 
+ <select id="getSmallInMid" parameterType="String" resultType="BizInfo">
+ SELECT small_code as smallCode,small_name as smallName 
+ FROM small_category
+ where left(small_code,3) = #{value}
+ ORDER BY small_code
+ </select>
+ 
+ <select id="getBizList" parameterType="String" resultType="BizInfo">
+ select biz_id, biz_name,branch_name, std_name, dong_name, lng, lat 
+ from bizinfo
+ where dong_name =#{dongName} and small_code=#{smallCode}
+ ORDER BY small_code
+ </select>
+ 
+ <select id="getBizListByDong" parameterType="String" resultType="BizInfo">
+ select biz_id, biz_name,branch_name, std_name, dong_name, lng, lat 
+ from bizinfo
+ where dong_name = #{value}
+ ORDER BY dong_name
+ </select>
+ 
+ <select id="getBizListByCategory" parameterType="String" resultType="BizInfo">
+ select biz_id, biz_name,branch_name, std_name, dong_name, lng, lat 
+ from bizinfo
+ where small_code = #{value}
+ ORDER BY small_code
+ </select>
+ 
+ </mapper>
